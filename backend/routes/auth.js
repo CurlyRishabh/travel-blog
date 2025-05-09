@@ -26,14 +26,16 @@ const authenticateToken = (req, res, next) => {
 // Register route
 router.post('/register', async (req, res) => {
     try {
-        const { username, email, password, userType } = req.body;
+        const { username, email, password, userType, profile_picture, name } = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const user = await User.create({
             username,
             email,
             password: hashedPassword,
-            userType: userType || UserTypes.USER
+            userType: userType || UserTypes.USER,
+            profile_picture,
+            name
         });
 
         res.status(201).json({ message: 'User created successfully' });
