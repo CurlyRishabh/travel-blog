@@ -2,23 +2,16 @@ const express = require('express');
 const router = express.Router();
 const { Blog, User } = require('../database');
 const auth = require('../middleware/auth'); // Assuming you have auth middleware
-const multer = require('multer');
 const { Op } = require('sequelize');
-// Configure multer for handling file uploads
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'uploads/') // Make sure this directory exists
-    },
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + '-' + file.originalname)
-    }
-});
-
-const upload = multer({ storage: storage });
+const upload = require('./multer');
 
 
 // Create a new blog - updated to handle multipart form data
-router.post('/create', auth, upload.single('image'), async (req, res) => {
+// router.post('/create', auth, upload.single('image'), async (req, res) => {
+router.post('/create', auth, async (req, res, next) => {
+    req.uploadType = 'blog';
+    next();
+}, upload.single('image'), async (req, res) => {
     try {
         const { title, description, tags, total_cost, destination } = req.body;
 
