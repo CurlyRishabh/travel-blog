@@ -28,6 +28,14 @@ const BlogModel = (sequelize) => {
         destination: {
             type: DataTypes.STRING,
             allowNull: false,
+        },
+        userId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: 'User',
+                key: 'id'
+            }
         }
     });
 

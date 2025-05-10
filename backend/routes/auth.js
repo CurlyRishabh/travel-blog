@@ -14,7 +14,7 @@ const authenticateToken = (req, res, next) => {
         return res.status(401).json({ error: 'Access token required' });
     }
 
-    jwt.verify(token, 'your-secret-key', (err, user) => {
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
         if (err) {
             return res.status(403).json({ error: 'Invalid token' });
         }
@@ -58,10 +58,10 @@ router.post('/login', async (req, res) => {
         if (!validPassword) {
             return res.status(401).json({ error: 'Invalid password' });
         }
-
+        console.log(process.env.JWT_SECRET);
         const token = jwt.sign(
             { id: user.id, email: user.email },
-            'your-secret-key',
+            process.env.JWT_SECRET,
             { expiresIn: '24h' }
         );
 
@@ -100,7 +100,7 @@ router.post('/forgot-password', async (req, res) => {
 
         const resetToken = jwt.sign(
             { id: user.id, email: user.email },
-            'your-secret-key',
+            process.env.JWT_SECRET,
             { expiresIn: '1h' }
         );
 
@@ -118,7 +118,7 @@ router.post('/reset-password', async (req, res) => {
     try {
         const { resetToken, newPassword } = req.body;
 
-        const decoded = jwt.verify(resetToken, 'your-secret-key');
+        const decoded = jwt.verify(resetToken, process.env.JWT_SECRET);
         
         const user = await User.findByPk(decoded.id);
         if (!user) {

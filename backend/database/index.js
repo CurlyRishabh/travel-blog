@@ -16,6 +16,10 @@ const User  = UserModel(sequelize)
 const Blog = BlogModel(sequelize)
 const LikeComment = LikeCommentModel(sequelize)
 
+// Add these two lines to define the User-Blog relationship
+User.hasMany(Blog, { foreignKey: 'userId', as: 'blogs' });
+Blog.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+
 Blog.hasMany(LikeComment);
 LikeComment.belongsTo(Blog);
 User.hasMany(LikeComment);
